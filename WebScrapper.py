@@ -70,3 +70,6 @@ for span in soup.select('span'):
     #except(AttributeError, KeyError) as er:
         logError("Span did not contain a class tag");
         pass;
+
+# Closes the browser
+browser.quit();
