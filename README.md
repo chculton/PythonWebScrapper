@@ -9,6 +9,8 @@
 ## Libraries
 - requests
 - BeautifulSoup4
+- Selenium
+- Firefox
 
 ## How to Use
 Download the project. Enter the URL into the txt file, URLToScrape.txt. Add elements you would like to scrape for to the same txt file. Run the python file, and a new file, results.txt, will be created in the same directory, populated with the results of the scrape.
