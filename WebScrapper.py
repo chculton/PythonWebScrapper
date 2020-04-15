@@ -53,23 +53,46 @@ browser = establishHeadlessFirefox();
 browser.get(URL);
 soup = BeautifulSoup(browser.page_source, "html.parser");
 
+#tickerStorage = [[],[]];
+tickerDetailsStorage = [["first", "row"], ["Second", "row"]];
+ticker = 0;
+tickerDetails = 0;
+
 for span in soup.select('span'):
     try:
         #if span['class'] == "st_1QzH2P8 st_8u0ePN3":
+        rowOfData = ["why", "work"];
         for data in span['class']:
             if data == "st_8u0ePN3":
-                print(span.contents);
-                print("Found data!");
+                # the content prints as ticker, price, point increase, then percentage increase
+                print(span.text);
+                rowOfData.append(span.text);
+                #tickerStorage[ticker][tickerDetails] = span.text;
+                #tickerStorage[ticker][tickerDetails].append(span.text);
+                tickerDetails += 1;
+
+
+                #print(span.contents);
+                #print("Found data!");
             #print(data);
         #if span['class'] == "st_8u0ePN3":
             #print(span.text);S
             #print("Found span");
         #print(span["class"]);
         #print("Searching");
+        tickerDetailsStorage.append(rowOfData);
+        tickerDetails = 0;
+        ticker += 1;
     except:
     #except(AttributeError, KeyError) as er:
         logError("Span did not contain a class tag");
         pass;
+
+print(tickerDetailsStorage);
+#for a in range(len(tickerStorage)):
+#    for s in range(len(tickerStorage[a])):
+#        print(tickerStorage[a][s], end=' ')
+#    print()
 
 # Closes the browser
 browser.quit();
