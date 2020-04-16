@@ -4,6 +4,7 @@
 from contextlib import closing;
 from bs4 import BeautifulSoup;
 from selenium import webdriver;
+import numpy as np;
 
 # Python Libraries
 import os;
@@ -52,21 +53,28 @@ def establishHeadlessFirefox():
 browser = establishHeadlessFirefox();
 browser.get(URL);
 soup = BeautifulSoup(browser.page_source, "html.parser");
+# Closes the browser
+browser.quit();
 
 #tickerStorage = [[],[]];
-tickerDetailsStorage = [["first", "row"], ["Second", "row"]];
+#tickerDetailsStorage = [["first", "row"], ["Second", "row"]];
+#tickerDetailsStorage = np.array();
 ticker = 0;
 tickerDetails = 0;
-
+rowOfData = [];
 for span in soup.select('span'):
     try:
         #if span['class'] == "st_1QzH2P8 st_8u0ePN3":
-        rowOfData = ["why", "work"];
+        #rowOfData = ["why", "work"];
+
         for data in span['class']:
             if data == "st_8u0ePN3":
                 # the content prints as ticker, price, point increase, then percentage increase
-                print(span.text);
-                rowOfData.append(span.text);
+                #print(span.text);
+                if span.text:
+                    rowOfData.append(span.text);
+
+                #rowOfData.append(span.text);
                 #tickerStorage[ticker][tickerDetails] = span.text;
                 #tickerStorage[ticker][tickerDetails].append(span.text);
                 tickerDetails += 1;
@@ -80,19 +88,40 @@ for span in soup.select('span'):
             #print("Found span");
         #print(span["class"]);
         #print("Searching");
-        tickerDetailsStorage.append(rowOfData);
+        #tickerDetailsStorage.append(rowOfData);
         tickerDetails = 0;
         ticker += 1;
+        #print(rowOfData);
     except:
     #except(AttributeError, KeyError) as er:
         logError("Span did not contain a class tag");
         pass;
 
-print(tickerDetailsStorage);
+#print(tickerDetailsStorage);
 #for a in range(len(tickerStorage)):
 #    for s in range(len(tickerStorage[a])):
 #        print(tickerStorage[a][s], end=' ')
 #    print()
 
+#print(rowOfData);
+
+dataToSave = np.array(rowOfData);
+index = [0];
+newArray = np.delete(dataToSave, index);
+#print(newArray);
+
+testString = "";
+for x in newArray:
+    for i in range(4):
+        if type(newArray[x+i]) is int:
+            testString+=str(newArray[x+i]);
+        else:
+            testString+=newArray[x+i];
+        #x += 1;
+
+    x += 4;
+    print(testString);
+    testString = "";
+
 # Closes the browser
-browser.quit();
+#browser.quit();
