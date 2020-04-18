@@ -6,6 +6,8 @@ from bs4 import BeautifulSoup;
 from selenium import webdriver;
 import numpy as np;
 
+from selenium.webdriver.support.ui import WebDriverWait;
+
 import time;
 
 # Python Libraries
@@ -49,19 +51,22 @@ def logError(errorResponse):
 def establishHeadlessFirefox():
      firefoxOptions = webdriver.FirefoxOptions();
      # UNCOMMENT FOR HEADLESS BROWSER
-     firefoxOptions.add_argument('--headless');
+     #firefoxOptions.add_argument('--headless');
      return webdriver.Firefox(options=firefoxOptions, service_log_path=localDirectory+"\\geckodriver.log");
 
 # MAIN
 browser = establishHeadlessFirefox();
 browser.get(URL);
+#print (browser.page_source.encode("utf-8"));
+wait = WebDriverWait(browser, 10);
 # seems that there is a maximum amount of html that can be returned
 # parsing the python seems to parse the same amount of code as
 # previously, just now its the last 16 stocks, rather than the prior 17
 #time.sleep(5);
 soup = BeautifulSoup(browser.page_source, "html.parser");
+#print(soup)
 # Closes the browser
-browser.quit();
+#browser.quit();
 
 #tickerStorage = [[],[]];
 #tickerDetailsStorage = [["first", "row"], ["Second", "row"]];
