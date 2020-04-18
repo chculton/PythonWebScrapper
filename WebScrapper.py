@@ -74,9 +74,12 @@ isPositive = False;
 for span in soup.select('span'):
     try:
         #if span['class'] == "st_1QzH2P8 st_8u0ePN3":
-        for data in span['class']:
+        for data in span['class']: #this essentially looks through all spans
             if data == "st_w-QlNFW":
                 isPositive = True;
+                rowOfData.append(" Positive");
+            if data == "st_37VuZWc":
+                rowOfData.append(" Negative");
             if data == "st_8u0ePN3":
                 #try:
                 #    for searchForColor in data.contents:
@@ -109,7 +112,8 @@ stockInfoString = "";
 
 stockInformation = [];
 for i in range(len(newArray)):
-    if i%3 == 0:
+    #if i%3 == 0:
+    if i%4 == 0 and i != 0:
         stockInformation.append(stockInfoString);
         stockInfoString = "";
     tempString2 = newArray[i];
