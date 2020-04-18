@@ -115,17 +115,29 @@ stockInfoString = "";
 stockInformation = [];
 for i in range(len(newArray)):
     #if i%4 == 0:
+    #if(newArray[i]):
+    #    ;
+
     if i%3 == 0:
         newString += "\n";
         stockInformation.append(stockInfoString);
         stockInfoString = "";
         #print("\n");
     newString += newArray[i] + " ";
-    stockInfoString += newArray[i] + " ";
+    #tempString2 = newArray[i] + " ";
+    tempString2 = newArray[i];
+    print("reg: " + tempString2);
+    print(tempString2.split())
+    if(len(tempString2.split()) > 1):
+        newTempArray = tempString2.split();
+        print(tempString2[0] + tempString2[1] +tempString2[2] +tempString2[3]);
+        stockInfoString += newTempArray[0] + " " + newTempArray[1];
+    else:
+        stockInfoString += tempString2 + " ";
     #stockInformation.append(stockInfoString);
     #print(newArray[i]);
 
-print(newString);
+#print(newString);
 
 print("Second entry in stock info: " + stockInformation[1])
 
