@@ -6,6 +6,8 @@ from bs4 import BeautifulSoup;
 from selenium import webdriver;
 import numpy as np;
 
+import time;
+
 # Python Libraries
 import os;
 
@@ -46,12 +48,17 @@ def logError(errorResponse):
 
 def establishHeadlessFirefox():
      firefoxOptions = webdriver.FirefoxOptions();
+     # UNCOMMENT FOR HEADLESS BROWSER
      firefoxOptions.add_argument('--headless');
      return webdriver.Firefox(options=firefoxOptions, service_log_path=localDirectory+"\\geckodriver.log");
 
 # MAIN
 browser = establishHeadlessFirefox();
 browser.get(URL);
+# seems that there is a maximum amount of html that can be returned
+# parsing the python seems to parse the same amount of code as
+# previously, just now its the last 16 stocks, rather than the prior 17
+#time.sleep(5);
 soup = BeautifulSoup(browser.page_source, "html.parser");
 # Closes the browser
 browser.quit();
@@ -62,97 +69,55 @@ browser.quit();
 ticker = 0;
 tickerDetails = 0;
 rowOfData = [];
+
+isPositive = False;
 for span in soup.select('span'):
     try:
         #if span['class'] == "st_1QzH2P8 st_8u0ePN3":
-        #rowOfData = ["why", "work"];
-
         for data in span['class']:
+            if data == "st_w-QlNFW":
+                isPositive = True;
             if data == "st_8u0ePN3":
+                #try:
+                #    for searchForColor in data.contents:
+                #        if searchForColor == "st_2fTou_q":
+                #            rowOfData.append("Positive");
+                #        else:
+                #            rowOfData.append("Negative");
+                #except:
+                #    print("Can't find color.");
                 # the content prints as ticker, price, point increase, then percentage increase
-                #print(span.text);
                 if span.text:
                     rowOfData.append(span.text);
+                    #if(isPositive):
+                    #    rowOfData.append("Positive");
+                    #    isPositive = False;
+                    #else: rowOfData.append("Negative");
 
-                #rowOfData.append(span.text);
-                #tickerStorage[ticker][tickerDetails] = span.text;
-                #tickerStorage[ticker][tickerDetails].append(span.text);
                 tickerDetails += 1;
-
-
-                #print(span.contents);
-                #print("Found data!");
-            #print(data);
-        #if span['class'] == "st_8u0ePN3":
-            #print(span.text);S
-            #print("Found span");
-        #print(span["class"]);
-        #print("Searching");
-        #tickerDetailsStorage.append(rowOfData);
         tickerDetails = 0;
         ticker += 1;
-        #print(rowOfData);
     except:
-    #except(AttributeError, KeyError) as er:
         #logError("Span did not contain a class tag");
         pass;
-
-#print(tickerDetailsStorage);
-#for a in range(len(tickerStorage)):
-#    for s in range(len(tickerStorage[a])):
-#        print(tickerStorage[a][s], end=' ')
-#    print()
-
-#print(rowOfData);
 
 dataToSave = np.array(rowOfData);
 index = [0];
 newArray = np.delete(dataToSave, index);
-newString = "";
 
 stockInfoString = "";
 
 stockInformation = [];
 for i in range(len(newArray)):
-    #if i%4 == 0:
-    #if(newArray[i]):
-    #    ;
-
     if i%3 == 0:
-        newString += "\n";
         stockInformation.append(stockInfoString);
         stockInfoString = "";
-        #print("\n");
-    newString += newArray[i] + " ";
-    #tempString2 = newArray[i] + " ";
     tempString2 = newArray[i];
-    print("reg: " + tempString2);
-    print(tempString2.split())
     if(len(tempString2.split()) > 1):
         newTempArray = tempString2.split();
-        print(tempString2[0] + tempString2[1] +tempString2[2] +tempString2[3]);
         stockInfoString += newTempArray[0] + " " + newTempArray[1];
     else:
         stockInfoString += tempString2 + " ";
-    #stockInformation.append(stockInfoString);
-    #print(newArray[i]);
 
-#print(newString);
-
-print("Second entry in stock info: " + stockInformation[1])
-
-#testString = "";
-#for x in newArray:
-#    for i in range(4):
-#        if type(newArray[x+i]) is int:
-#            testString+=str(newArray[x+i]);
-#        else:
-#            testString+=newArray[x+i];
-#        #x += 1;
-
-#    x += 4;
-#    print(testString);
-#    testString = "";
-
-# Closes the browser
-#browser.quit();
+for k in range(len(stockInformation)):
+    print(str(k) + " entry in stock info: " + stockInformation[k]);
