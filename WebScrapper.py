@@ -94,7 +94,7 @@ for span in soup.select('span'):
         #print(rowOfData);
     except:
     #except(AttributeError, KeyError) as er:
-        logError("Span did not contain a class tag");
+        #logError("Span did not contain a class tag");
         pass;
 
 #print(tickerDetailsStorage);
@@ -108,20 +108,39 @@ for span in soup.select('span'):
 dataToSave = np.array(rowOfData);
 index = [0];
 newArray = np.delete(dataToSave, index);
-#print(newArray);
+newString = "";
 
-testString = "";
-for x in newArray:
-    for i in range(4):
-        if type(newArray[x+i]) is int:
-            testString+=str(newArray[x+i]);
-        else:
-            testString+=newArray[x+i];
-        #x += 1;
+stockInfoString = "";
 
-    x += 4;
-    print(testString);
-    testString = "";
+stockInformation = [];
+for i in range(len(newArray)):
+    #if i%4 == 0:
+    if i%3 == 0:
+        newString += "\n";
+        stockInformation.append(stockInfoString);
+        stockInfoString = "";
+        #print("\n");
+    newString += newArray[i] + " ";
+    stockInfoString += newArray[i] + " ";
+    #stockInformation.append(stockInfoString);
+    #print(newArray[i]);
+
+print(newString);
+
+print("Second entry in stock info: " + stockInformation[1])
+
+#testString = "";
+#for x in newArray:
+#    for i in range(4):
+#        if type(newArray[x+i]) is int:
+#            testString+=str(newArray[x+i]);
+#        else:
+#            testString+=newArray[x+i];
+#        #x += 1;
+
+#    x += 4;
+#    print(testString);
+#    testString = "";
 
 # Closes the browser
 #browser.quit();
