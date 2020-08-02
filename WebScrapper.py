@@ -1,71 +1,26 @@
+# Python Libraries
+import os;
+import time;
+import numpy as np;
+
 # External Libraries
-#from requests import get;
-#from requests.exceptions import RequestException;
 from contextlib import closing;
 from bs4 import BeautifulSoup;
 from selenium import webdriver;
-import numpy as np;
-
 from selenium.webdriver.support.ui import WebDriverWait;
-#from selenium.webdriver.support import expected_conditions as EC
-
-import time;
-
-# Python Libraries
-import os;
 
 # Local files
 import TxtParser;
 
-# Initialize storage for parsed file data
-textFileData = [];
-
-# Get local directory
-localDirectory = os.path.dirname(os.path.realpath(__file__));
-fileToReadPath = localDirectory+"\\URLToScrape.txt";
-
-# temporary, as this value will be read from a txt file
-textFileData = TxtParser.parseFile(fileToReadPath);
-URL = textFileData[0];
-#URL = "https://stocktwits.com/discover/earnings-calendar/";
-#URL = "https://stocktwits.com/discover/earnings-calendar/2020-04-14";
-#URL = "https://ql.stocktwits.com/batch?symbols=TSRI%2CARTW%2CLONE%2CXELB%2CLOAN%2CPNM%2CHIFS";
-
 # Function Definitions
-#def getURL(url):
-#    try:
-#        with closing(get(url,stream=True)) as response:
-#            if goodResponse(response):
-#                return response.content;
-#            else:
-#                return None;
-#    except RequestException as Ex:
-#        logError("Error during requests to {0} : {1}".format(url, str(Ex)));
-
-#def goodResponse(_response):
-#    contentType = _response.headers["Content-Type"].lower();
-#    return (_response.status_code == 200 and contentType is not None and contentType.find("html") > -1);
-
 def logError(errorResponse):
     print(errorResponse);
 
 def establishHeadlessFirefox():
      firefoxOptions = webdriver.FirefoxOptions();
      # UNCOMMENT FOR HEADLESS BROWSER
-     #firefoxOptions.add_argument('--headless');
+     firefoxOptions.add_argument('--headless');
      return webdriver.Firefox(options=firefoxOptions, service_log_path=localDirectory+"\\geckodriver.log");
-
-# MAIN
-browser = establishHeadlessFirefox();
-#browser.implicitly_wait(10);
-browser.get(URL);
-#browser.implicitly_wait(10);
-print(browser.page_source.encode("utf-8"));
-#wait = WebDriverWait(browser, 10);
-#//element = wait.until(EC.presence_of_all_elements_located((By.ID, 'class')))
-
-
-
 
 # seems that there is a maximum amount of html that can be returned
 # parsing the python seems to parse the same amount of code as
@@ -149,16 +104,34 @@ def scrollPage(_xScrollAmountInPixels, _yScrollAmountInPixels):
 
 # Scroll down the page
 def scrollToPageBottom():
+    k = 0;
     currentPage = browser.page_source
-    for x in range(20):
+    while (k < 2):
         scrollPage(0, 500)
         scrolledPage = browser.page_source
         if scrolledPage != currentPage:
             currentPage = scrolledPage
+            k = 0;
         else:
             # if this happens 2 in a row, page bottom had been met
             # close the browser window
+            k += 1;
             break
 
-#currentPage = browser.page_source
+# MAIN
+# Initialize storage for parsed file data
+textFileData = [];
+
+# Get local directory
+localDirectory = os.path.dirname(os.path.realpath(__file__));
+fileToReadPath = localDirectory+"\\URLToScrape.txt";
+
+# temporary, as this value will be read from a txt file
+textFileData = TxtParser.parseFile(fileToReadPath);
+URL = textFileData[0];
+
+browser = establishHeadlessFirefox();
+browser.get(URL);
 scrollToPageBottom();
+# Closes the browser
+browser.quit();
