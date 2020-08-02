@@ -13,28 +13,15 @@ from selenium.webdriver.support.ui import WebDriverWait;
 import TxtParser;
 
 # Function Definitions
-def logError(errorResponse):
-    print(errorResponse);
-
 def establishHeadlessFirefox():
      firefoxOptions = webdriver.FirefoxOptions();
      # UNCOMMENT FOR HEADLESS BROWSER
      firefoxOptions.add_argument('--headless');
      return webdriver.Firefox(options=firefoxOptions, service_log_path=localDirectory+"\\geckodriver.log");
 
-# seems that there is a maximum amount of html that can be returned
-# parsing the python seems to parse the same amount of code as
-# previously, just now its the last 16 stocks, rather than the prior 17
-#time.sleep(5);
+# Parses the visible window's html for the ticker information
 def findTickers():
     soup = BeautifulSoup(browser.page_source, "html.parser");
-    #print(soup)
-    # Closes the browser
-    #browser.quit();
-
-    #tickerStorage = [[],[]];
-    #tickerDetailsStorage = [["first", "row"], ["Second", "row"]];
-    #tickerDetailsStorage = np.array();
     ticker = 0;
     tickerDetails = 0;
     rowOfData = [];
@@ -42,7 +29,6 @@ def findTickers():
     isPositive = False;
     for span in soup.select('span'):
         try:
-            #if span['class'] == "st_1QzH2P8 st_8u0ePN3":
             for data in span['class']: #this essentially looks through all spans
                 if data == "st_w-QlNFW":
                     isPositive = True;
@@ -50,27 +36,13 @@ def findTickers():
                 if data == "st_37VuZWc":
                     rowOfData.append(" Negative");
                 if data == "st_8u0ePN3":
-                    #try:
-                    #    for searchForColor in data.contents:
-                    #        if searchForColor == "st_2fTou_q":
-                    #            rowOfData.append("Positive");
-                    #        else:
-                    #            rowOfData.append("Negative");
-                    #except:
-                    #    print("Can't find color.");
-                    # the content prints as ticker, price, point increase, then percentage increase
                     if span.text:
                         rowOfData.append(span.text);
-                        #if(isPositive):
-                        #    rowOfData.append("Positive");
-                        #    isPositive = False;
-                        #else: rowOfData.append("Negative");
-
+                        print("Appending st_8u0ePN3")
                     tickerDetails += 1;
             tickerDetails = 0;
             ticker += 1;
         except:
-            #logError("Span did not contain a class tag");
             pass;
 
     dataToSave = np.array(rowOfData);
@@ -81,7 +53,6 @@ def findTickers():
 
     stockInformation = [];
     for i in range(len(newArray)):
-        #if i%3 == 0:
         if i%4 == 0 and i != 0:
             stockInformation.append(stockInfoString);
             stockInfoString = "";
@@ -102,7 +73,7 @@ def scrollPage(_xScrollAmountInPixels, _yScrollAmountInPixels):
         findTickers()
         time.sleep(2)
 
-# Scroll down the page
+# Scroll by 1000 pixels to the bottom of the page
 def scrollToPageBottom():
     k = 0;
     currentPage = browser.page_source
@@ -113,12 +84,12 @@ def scrollToPageBottom():
             currentPage = scrolledPage
             k = 0;
         else:
-            # if this happens 2 in a row, page bottom had been met
-            # close the browser window
+            # if this happens twice in a row, the page bottom had been met
+            # close the browser window by exiting this loop
             k += 1;
             break
 
-# MAIN
+# MAIN #
 # Initialize storage for parsed file data
 textFileData = [];
 

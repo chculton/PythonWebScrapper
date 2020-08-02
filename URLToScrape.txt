@@ -1,3 +1,1 @@
 URLToScrape:https://stocktwits.com/discover/earnings-calendar/;
-Item1:;
-Item2:;
